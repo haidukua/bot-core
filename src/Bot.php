@@ -24,7 +24,7 @@ final readonly class Bot
 
             return;
         } finally {
-            $this->runner->onRan($heroId);
+            $this->runner->onFinally($heroId);
         }
 
         $this->scheduler->add($heroId, $this->runner->sleepTime($heroId));

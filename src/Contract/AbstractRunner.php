@@ -19,7 +19,7 @@ abstract class AbstractRunner
     public function onBoot(string $heroId): void
     {}
 
-    public function onRan(string $heroId): void
+    public function onFinally(string $heroId): void
     {}
 
     public function onStopped(string $heroId): void
