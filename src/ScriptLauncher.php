@@ -27,11 +27,13 @@ final class ScriptLauncher
 
     public function current(): ?ScriptInterface
     {
-        $scriptName = current($this->queue);
+        $nextScriptName = current($this->nextQueue);
 
-        if (!empty($this->nextQueue)) {
-            $scriptName = current($this->nextQueue);
+        if ($nextScriptName !== false) {
+            return $this->factory->create($nextScriptName);
         }
+
+        $scriptName = current($this->queue);
 
         if (!$scriptName) {
             return null;
@@ -42,9 +44,9 @@ final class ScriptLauncher
 
     public function next(): void
     {
-        if (!empty($this->nextQueue)) {
-            next($this->nextQueue);
+        $result = next($this->nextQueue);
 
+        if ($result !== false) {
             return;
         }
 
