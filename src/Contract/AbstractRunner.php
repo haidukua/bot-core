@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Haidukua\BotCore\Contract;
 
-use Haidukua\BotCore\Exception\LogicScriptException;
 use Haidukua\BotCore\Exception\StopBotException;
-use Haidukua\BotCore\Exception\NextScriptException;
 
 abstract class AbstractRunner
 {

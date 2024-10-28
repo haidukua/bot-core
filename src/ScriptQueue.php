@@ -27,15 +27,13 @@ final class ScriptQueue
 
     public function current(): ?ScriptInterface
     {
-        if (isset($this->queueNext[0])) {
-            return $this->factory->create($this->queueNext[0]);
-        }
+        $scriptName = $this->fetchCurrentScriptName();
 
-        if (!isset($this->queue[0])) {
+        if ($scriptName === null) {
             return null;
         }
 
-        return $this->factory->create($this->queue[0]);
+        return $this->factory->create($scriptName);
     }
 
     public function next(): void
@@ -57,5 +55,18 @@ final class ScriptQueue
     public function isInQueueNext(string $scriptName): bool
     {
         return in_array($scriptName, $this->queueNext, true);
+    }
+
+    private function fetchCurrentScriptName(): ?string
+    {
+        if (isset($this->queueNext[0])) {
+            return $this->queueNext[0];
+        }
+
+        if (!isset($this->queue[0])) {
+            return null;
+        }
+
+        return $this->queue[0];
     }
 }
