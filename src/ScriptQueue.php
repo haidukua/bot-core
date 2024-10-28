@@ -15,12 +15,12 @@ final class ScriptQueue
         private readonly ScriptFactoryInterface $factory,
     ) {}
 
-    public function pop(string $scriptName): void
+    public function add(string $scriptName): void
     {
         $this->queue[] = $scriptName;
     }
 
-    public function popNext(string $scriptName): void
+    public function addNext(string $scriptName): void
     {
         $this->queueNext[] = $scriptName;
     }
