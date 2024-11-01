@@ -10,7 +10,7 @@ final readonly class Scheduler
     public function __construct(
         private \Redis $redis,
         private Terminal $terminal,
-        private string $queueKey,
+        private string $queueKey = 'bot:queue',
         private int $timeLimit = 3600,
     )
     {
