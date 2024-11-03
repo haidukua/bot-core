@@ -11,8 +11,8 @@ final class Proxy
         public readonly string $password,
         public readonly string $ip,
         public readonly int $port,
-        public \DateTimeInterface $usedAt = new \DateTimeImmutable(),
-        public \DateTimeInterface $failedAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $usedAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $failedAt = new \DateTimeImmutable(),
     ) {
     }
 }
