@@ -19,30 +19,30 @@ final readonly class Scheduler
 
     public function run(): void
     {
-        $now = time();
+        while (true) {
+            $now = time();
 
-        if ($this->stopAt < $now) {
-            return;
-        }
-
-        $queuedMessageCount = $this->redis->zCount($this->queueKey, '0', (string) $now) ?? 0;
-
-        $messages = $this->redis->zPopMin($this->queueKey, $queuedMessageCount) ?? [];
-
-        if ($queuedMessageCount !== 0) {
-            foreach ($messages as $heroId => $expiry) {
-                if ($now - $expiry > 30) {
-                    continue;
-                }
-
-                $this->terminal->stopBotProcess($heroId);
-                $this->terminal->runCommandBackground($heroId);
+            if ($this->stopAt < $now) {
+                return;
             }
+
+            $queuedMessageCount = $this->redis->zCount($this->queueKey, '0', (string) $now) ?? 0;
+
+            $messages = $this->redis->zPopMin($this->queueKey, $queuedMessageCount) ?? [];
+
+            if ($queuedMessageCount !== 0) {
+                foreach ($messages as $heroId => $expiry) {
+                    if ($now - $expiry > 30) {
+                        continue;
+                    }
+
+                    $this->terminal->stopBotProcess($heroId);
+                    $this->terminal->runCommandBackground($heroId);
+                }
+            }
+
+            sleep(5);
         }
-
-        sleep(5);
-
-        $this->run();
     }
 
     public function add(string $heroId, int $delay = 0): void
