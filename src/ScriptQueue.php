@@ -3,37 +3,49 @@ declare(strict_types=1);
 
 namespace Haidukua\BotCore;
 
-use Haidukua\BotCore\Contract\ScriptFactoryInterface;
-use Haidukua\BotCore\Contract\ScriptInterface;
-
 final class ScriptQueue
 {
+    /**
+     * @var class-string[]
+     */
     private array $queue = [];
+
+    /**
+     * @var class-string[]
+     */
     private array $queueNext = [];
 
-    public function __construct(
-        private readonly ScriptFactoryInterface $factory,
-    ) {}
-
+    /**
+     * @param class-string $scriptName
+     */
     public function add(string $scriptName): void
     {
         $this->queue[] = $scriptName;
     }
 
+    /**
+     * @param class-string $scriptName
+     */
     public function addNext(string $scriptName): void
     {
         $this->queueNext[] = $scriptName;
     }
 
-    public function current(): ?ScriptInterface
-    {
-        $scriptName = $this->fetchCurrentScriptName();
 
-        if ($scriptName === null) {
-            return null;
+    /**
+     * @return class-string|null
+     */
+    public function current(): ?string
+    {
+        if (isset($this->queueNext[0])) {
+            return $this->queueNext[0];
         }
 
-        return $this->factory->create($scriptName);
+        if (isset($this->queue[0])) {
+            return $this->queue[0];
+        }
+
+        return null;
     }
 
     public function next(): void
@@ -47,26 +59,19 @@ final class ScriptQueue
         array_shift($this->queue);
     }
 
+    /**
+     * @param class-string $scriptName
+     */
     public function isInQueue(string $scriptName): bool
     {
         return in_array($scriptName, $this->queue, true);
     }
 
+    /**
+     * @param class-string $scriptName
+     */
     public function isInQueueNext(string $scriptName): bool
     {
         return in_array($scriptName, $this->queueNext, true);
-    }
-
-    private function fetchCurrentScriptName(): ?string
-    {
-        if (isset($this->queueNext[0])) {
-            return $this->queueNext[0];
-        }
-
-        if (!isset($this->queue[0])) {
-            return null;
-        }
-
-        return $this->queue[0];
     }
 }
