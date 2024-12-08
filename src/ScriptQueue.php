@@ -6,36 +6,26 @@ namespace Haidukua\BotCore;
 final class ScriptQueue
 {
     /**
-     * @var class-string[]
+     * @var object[]
      */
     private array $queue = [];
 
     /**
-     * @var class-string[]
+     * @var object[]
      */
     private array $queueNext = [];
 
-    /**
-     * @param class-string $scriptName
-     */
-    public function add(string $scriptName): void
+    public function add(object $script): void
     {
-        $this->queue[] = $scriptName;
+        $this->queue[] = $script;
     }
 
-    /**
-     * @param class-string $scriptName
-     */
-    public function addNext(string $scriptName): void
+    public function addNext(object $script): void
     {
-        $this->queueNext[] = $scriptName;
+        $this->queueNext[] = $script;
     }
 
-
-    /**
-     * @return class-string|null
-     */
-    public function current(): ?string
+    public function current(): ?object
     {
         if (isset($this->queueNext[0])) {
             return $this->queueNext[0];
@@ -60,18 +50,30 @@ final class ScriptQueue
     }
 
     /**
-     * @param class-string $scriptName
+     * @param class-string $scriptClass
      */
-    public function isInQueue(string $scriptName): bool
+    public function isInQueue(string $scriptClass): bool
     {
-        return in_array($scriptName, $this->queue, true);
+        foreach ($this->queue as $script) {
+            if ($script instanceof  $scriptClass) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * @param class-string $scriptName
+     * @param class-string $scriptClass
      */
-    public function isInQueueNext(string $scriptName): bool
+    public function isInQueueNext(string $scriptClass): bool
     {
-        return in_array($scriptName, $this->queueNext, true);
+        foreach ($this->queueNext as $script) {
+            if ($script instanceof $scriptClass) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
