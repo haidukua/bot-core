@@ -32,6 +32,10 @@ final readonly class Scheduler
 
             if ($queuedMessageCount !== 0) {
                 foreach ($messages as $heroId => $expiry) {
+                    if (str_ends_with((string) $expiry, '.1')) {
+                        continue;
+                    }
+
                     if ($now - $expiry > 30) {
                         continue;
                     }
@@ -54,11 +58,6 @@ final readonly class Scheduler
 
     public function remove(string $heroId): void
     {
-        $this->redis->zRem($this->queueKey,$heroId);
-    }
-
-    public function removeAll(): void
-    {
-        $this->redis->del($this->queueKey);
+        $this->redis->zAdd($this->queueKey,time() + 0.1, $heroId);
     }
 }
