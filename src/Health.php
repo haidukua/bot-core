@@ -37,18 +37,14 @@ final readonly class Health
 
         $priority = [];
         $normal = [];
-        foreach ($rows as $key => $value) {
-            if ($key % 2 === 0) {
-                continue;
-            }
-
-            if (str_ends_with($rows[$key + 1], '.1')) {
-                $priority[] = $value;
+        foreach ($rows as $score => $id) {
+             if (str_ends_with($score, '.1')) {
+                $priority[] = $id;
 
                 continue;
             }
 
-            $normal[] = $value;
+            $normal[] = $id;
         }
 
         return new HealthIds($normal, $priority);
