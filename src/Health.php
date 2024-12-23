@@ -38,7 +38,7 @@ final readonly class Health
         $priority = [];
         $normal = [];
         foreach ($rows as $id => $score) {
-             if (str_ends_with($score, '.1')) {
+             if (str_ends_with((string) $score, '.1')) {
                 $priority[] = $id;
 
                 continue;
