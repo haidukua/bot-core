@@ -20,6 +20,6 @@ abstract class AbstractRunner
     public function onFinally(string $heroId): void
     {}
 
-    public function onStopped(string $heroId): void
+    public function onStopped(string $heroId, StopBotException $e): void
     {}
 }

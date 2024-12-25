@@ -19,8 +19,8 @@ final readonly class Bot
 
         try {
             $this->runner->run($heroId);
-        } catch (Exception\StopBotException) {
-            $this->runner->onStopped($heroId);
+        } catch (Exception\StopBotException $e) {
+            $this->runner->onStopped($heroId, $e);
 
             return;
         } finally {
