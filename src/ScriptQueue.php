@@ -5,6 +5,7 @@ namespace Haidukua\BotCore;
 
 final class ScriptQueue
 {
+    private ?object $current = null;
     /**
      * @var object[]
      */
@@ -27,26 +28,30 @@ final class ScriptQueue
 
     public function current(): ?object
     {
-        if (isset($this->queueNext[0])) {
-            return $this->queueNext[0];
+        if ($this->current === null) {
+            if (isset($this->queueNext[0])) {
+                $this->current = $this->queueNext[0];
+            }
+
+            if (isset($this->queue[0])) {
+                $this->current = $this->queue[0];
+            }
         }
 
-        if (isset($this->queue[0])) {
-            return $this->queue[0];
-        }
-
-        return null;
+        return $this->current;
     }
 
     public function next(): void
     {
-        if (isset($this->queueNext[0])) {
+        if (isset($this->queueNext[0]) && $this->queueNext[0] instanceof $this->current) {
             array_shift($this->queueNext);
-
-            return;
         }
 
-        array_shift($this->queue);
+        if (!isset($this->queueNext[0])) {
+            array_shift($this->queue);
+        }
+
+        $this->current = null;
     }
 
     /**
