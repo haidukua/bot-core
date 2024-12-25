@@ -43,7 +43,7 @@ final class ScriptQueue
 
     public function next(): void
     {
-        if (isset($this->queueNext[0]) && $this->queueNext[0] instanceof $this->current) {
+        if ($this->current !== null && isset($this->queueNext[0]) && $this->queueNext[0] instanceof $this->current) {
             array_shift($this->queueNext);
         }
 
