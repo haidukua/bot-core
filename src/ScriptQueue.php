@@ -38,7 +38,7 @@ final class ScriptQueue
             }
         }
 
-        return $this->current = null;
+        return $this->current;
     }
 
     public function next(): void
