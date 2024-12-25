@@ -30,15 +30,15 @@ final class ScriptQueue
     {
         if ($this->current === null) {
             if (isset($this->queueNext[0])) {
-                $this->current = $this->queueNext[0];
+                return $this->current = $this->queueNext[0];
             }
 
             if (isset($this->queue[0])) {
-                $this->current = $this->queue[0];
+                return $this->current = $this->queue[0];
             }
         }
 
-        return $this->current;
+        return $this->current = null;
     }
 
     public function next(): void
