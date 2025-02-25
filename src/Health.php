@@ -26,6 +26,11 @@ final readonly class Health
         $this->redis->zRem($this->prefix . ':health',$heroId);
     }
 
+    public function isPinged(string $heroId): bool
+    {
+        return is_float($this->redis->zScore($this->prefix . ':health', $heroId));
+    }
+
     public function fetchIds(\DateTimeImmutable $toPingTime): HealthIds
     {
         $rows = $this->redis->zRangeByScore(
