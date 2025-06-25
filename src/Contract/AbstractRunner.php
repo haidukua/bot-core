@@ -17,6 +17,9 @@ abstract class AbstractRunner
     public function onBoot(string $heroId): void
     {}
 
+    public function onSleep(string $heroId, int $sleepTime): void
+    {}
+
     public function onFinally(string $heroId): void
     {}
 
