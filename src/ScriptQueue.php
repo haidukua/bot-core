@@ -5,28 +5,41 @@ namespace Haidukua\BotCore;
 
 final class ScriptQueue
 {
-    private ?object $current = null;
+    private ?string $current = null;
     /**
-     * @var object[]
+     * @var class-string[]
      */
     private array $queue = [];
 
     /**
-     * @var object[]
+     * @var class-string[]
      */
     private array $queueNext = [];
 
-    public function add(object $script): void
+    /**
+     * @var class-string[]
+     */
+    private array $failed = [];
+
+    public function add(string $scriptName): void
     {
-        $this->queue[] = $script;
+        if (in_array($scriptName, $this->failed, true)) {
+            return;
+        }
+
+        $this->queue[] = $scriptName;
     }
 
-    public function addNext(object $script): void
+    public function addNext(object $scriptName): void
     {
-        $this->queueNext[] = $script;
+         if (in_array($scriptName, $this->failed, true)) {
+            return;
+         }
+
+        $this->queueNext[] = $scriptName;
     }
 
-    public function current(): ?object
+    public function current(): ?string
     {
         if ($this->current === null) {
             if (isset($this->queueNext[0])) {
@@ -43,7 +56,7 @@ final class ScriptQueue
 
     public function next(): void
     {
-        if ($this->current !== null && isset($this->queueNext[0]) && $this->queueNext[0] instanceof $this->current) {
+        if ($this->current !== null && isset($this->queueNext[0]) && $this->queueNext[0] === $this->current) {
             array_shift($this->queueNext);
         }
 
@@ -54,31 +67,28 @@ final class ScriptQueue
         $this->current = null;
     }
 
-    /**
-     * @param class-string $scriptClass
-     */
-    public function isInQueue(string $scriptClass): bool
+    public function fail(string $scriptName): void
     {
-        foreach ($this->queue as $script) {
-            if ($script instanceof  $scriptClass) {
-                return true;
-            }
+        if (in_array($scriptName, $this->queue, true)) {
+            return;
         }
 
-        return false;
+        $this->failed[] = $scriptName;
     }
 
     /**
-     * @param class-string $scriptClass
+     * @param class-string $scriptName
      */
-    public function isInQueueNext(string $scriptClass): bool
+    public function isInQueue(string $scriptName): bool
     {
-        foreach ($this->queueNext as $script) {
-            if ($script instanceof $scriptClass) {
-                return true;
-            }
-        }
+        return in_array($scriptName, $this->queue, true);
+    }
 
-        return false;
+    /**
+     * @param class-string $scriptName
+     */
+    public function isInQueueNext(string $scriptName): bool
+    {
+        return in_array($scriptName, $this->queueNext, true);
     }
 }
