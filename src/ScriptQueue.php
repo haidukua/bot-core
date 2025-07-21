@@ -21,22 +21,22 @@ final class ScriptQueue
      */
     private array $failed = [];
 
-    public function add(string $scriptName): void
+    public function add(string $scriptClass): void
     {
-        if (in_array($scriptName, $this->failed, true)) {
+        if (in_array($scriptClass, $this->failed, true)) {
             return;
         }
 
-        $this->queue[] = $scriptName;
+        $this->queue[] = $scriptClass;
     }
 
-    public function addNext(object $scriptName): void
+    public function addNext(string $scriptClass): void
     {
-         if (in_array($scriptName, $this->failed, true)) {
+         if (in_array($scriptClass, $this->failed, true)) {
             return;
          }
 
-        $this->queueNext[] = $scriptName;
+        $this->queueNext[] = $scriptClass;
     }
 
     public function current(): ?string
@@ -67,28 +67,28 @@ final class ScriptQueue
         $this->current = null;
     }
 
-    public function fail(string $scriptName): void
+    public function fail(string $scriptClass): void
     {
-        if (in_array($scriptName, $this->queue, true)) {
+        if (in_array($scriptClass, $this->queue, true)) {
             return;
         }
 
-        $this->failed[] = $scriptName;
+        $this->failed[] = $scriptClass;
     }
 
     /**
-     * @param class-string $scriptName
+     * @param class-string $scriptClass
      */
-    public function isInQueue(string $scriptName): bool
+    public function isInQueue(string $scriptClass): bool
     {
-        return in_array($scriptName, $this->queue, true);
+        return in_array($scriptClass, $this->queue, true);
     }
 
     /**
-     * @param class-string $scriptName
+     * @param class-string $scriptClass
      */
-    public function isInQueueNext(string $scriptName): bool
+    public function isInQueueNext(string $scriptClass): bool
     {
-        return in_array($scriptName, $this->queueNext, true);
+        return in_array($scriptClass, $this->queueNext, true);
     }
 }
