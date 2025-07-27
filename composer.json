@@ -2,6 +2,8 @@
   "name": "haidukua/bot-core",
   "type": "library",
   "description": "bot-core",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "require": {
     "php": ">=8.3",
     "ext-redis": "*",
@@ -11,6 +13,5 @@
     "psr-4": {
       "Haidukua\\BotCore\\": "src/"
     }
-  },
-  "minimum-stability": "dev"
+  }
 }

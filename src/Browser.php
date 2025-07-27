@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Haidukua\BotCore;
 
+use Haidukua\BotCore\Contract\BrowserFilter;
 use Haidukua\BotCore\Contract\BrowserMiddleware;
 use Haidukua\BotCore\Contract\ProxyManagerInterface;
 use Symfony\Component\BrowserKit\CookieJar;
@@ -21,6 +22,12 @@ final class Browser extends HttpBrowser
      * @var BrowserMiddleware[]
      */
     private array $middlewares = [];
+
+    /**
+     * @var BrowserFilter[]
+     */
+    private array $filters = [];
+
     private int $retries = 0;
 
     public function __construct(
@@ -35,6 +42,38 @@ final class Browser extends HttpBrowser
     public function addMiddleware(BrowserMiddleware $middleware): void
     {
         $this->middlewares[] = $middleware;
+    }
+
+    public function addFilter(BrowserFilter $filter): void
+    {
+        $this->filters[] = $filter;
+    }
+
+    #[\Override]
+    public function request(
+        string $method,
+        string $uri,
+        array $parameters = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $changeHistory = true,
+    ): Crawler {
+        $crawler = parent::request(
+            $method,
+            $uri,
+            $parameters,
+            $files,
+            $server,
+            $content,
+            $changeHistory,
+        );
+
+        foreach ($this->middlewares as $middleware) {
+            $middleware->postRequest($this);
+        }
+
+        return $crawler;
     }
 
     public function goTo(string $uri): Crawler
@@ -131,30 +170,21 @@ final class Browser extends HttpBrowser
         return $response;
     }
 
-    #[\Override]
-    public function request(
-        string $method,
-        string $uri,
-        array $parameters = [],
-        array $files = [],
-        array $server = [],
-        ?string $content = null,
-        bool $changeHistory = true,
-    ): Crawler {
-        $crawler = parent::request(
-            $method,
-            $uri,
-            $parameters,
-            $files,
-            $server,
-            $content,
-            $changeHistory,
-        );
-
-        foreach ($this->middlewares as $middleware) {
-            $middleware->postRequest($this);
+    protected function filterRequest(Request $request): Request
+    {
+        foreach ($this->filters as $filter) {
+            $request = $filter->filterRequest($request);
         }
 
-        return $crawler;
+        return $request;
+    }
+
+    protected function filterResponse(object $response): object
+    {
+        foreach ($this->filters as $filter) {
+            $response = $filter->filterResponse($response);
+        }
+
+        return $response;
     }
 }
