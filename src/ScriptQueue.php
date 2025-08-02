@@ -6,6 +6,11 @@ namespace Haidukua\BotCore;
 final class ScriptQueue
 {
     /**
+     * @var class-string|null
+     */
+    private(set) ?string $processingScript = null;
+
+    /**
      * @var class-string[]
      */
     private array $regular = [];
@@ -19,6 +24,22 @@ final class ScriptQueue
      * @var class-string[]
      */
     private array $failed = [];
+
+    /**
+     * @param class-string $scriptClass
+     */
+    public function isInRegular(string $scriptClass): bool
+    {
+        return in_array($scriptClass, $this->regular, true);
+    }
+
+    /**
+     * @param class-string $scriptClass
+     */
+    public function isInPriority(string $scriptClass): bool
+    {
+        return in_array($scriptClass, $this->priority, true);
+    }
 
     public function add(string $scriptClass): void
     {
@@ -38,54 +59,44 @@ final class ScriptQueue
         $this->priority[] = $scriptClass;
     }
 
-    public function current(): ?string
+    public function peek(): ?string
     {
-        if (!empty($this->priority)) {
-            return $this->priority[0];
+        if (isset($this->priority[0])) {
+            return $this->processingScript = $this->priority[0];
         }
 
-        if (!empty($this->regular)) {
-            return $this->regular[0];
+        if (isset($this->regular[0])) {
+            return $this->processingScript = $this->regular[0];
         }
 
         return null;
     }
 
-    public function next(): void
+    public function done(): void
     {
-        if (!empty($this->priority)) {
+        if (isset($this->priority[0]) && $this->priority[0] === $this->processingScript) {
             array_shift($this->priority);
-            return;
         }
 
-        if (!empty($this->regular)) {
+        if (isset($this->regular[0]) && $this->regular[0] === $this->processingScript) {
             array_shift($this->regular);
-            return;
-        }
-    }
-
-    public function fail(string $scriptClass): void
-    {
-        if (in_array($scriptClass, $this->failed, true)) {
-            return;
         }
 
-        $this->failed[] = $scriptClass;
+        $this->processingScript = null;
     }
 
-    /**
-     * @param class-string $scriptClass
-     */
-    public function isInRegular(string $scriptClass): bool
+    public function fail(): void
     {
-        return in_array($scriptClass, $this->regular, true);
-    }
+        if ($this->processingScript === null) {
+            return;
+        }
 
-    /**
-     * @param class-string $scriptClass
-     */
-    public function isInPriority(string $scriptClass): bool
-    {
-        return in_array($scriptClass, $this->priority, true);
+        $this->done();
+
+        if (in_array($this->processingScript, $this->failed, true)) {
+            return;
+        }
+
+        $this->failed[] = $this->processingScript;
     }
 }
