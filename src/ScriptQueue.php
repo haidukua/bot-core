@@ -5,16 +5,15 @@ namespace Haidukua\BotCore;
 
 final class ScriptQueue
 {
-    private ?string $current = null;
     /**
      * @var class-string[]
      */
-    private array $queue = [];
+    private array $regular = [];
 
     /**
      * @var class-string[]
      */
-    private array $queueNext = [];
+    private array $priority = [];
 
     /**
      * @var class-string[]
@@ -27,49 +26,47 @@ final class ScriptQueue
             return;
         }
 
-        $this->queue[] = $scriptClass;
+        $this->regular[] = $scriptClass;
     }
 
-    public function addNext(string $scriptClass): void
+    public function addPriority(string $scriptClass): void
     {
          if (in_array($scriptClass, $this->failed, true)) {
             return;
          }
 
-        $this->queueNext[] = $scriptClass;
+        $this->priority[] = $scriptClass;
     }
 
     public function current(): ?string
     {
-        if ($this->current === null) {
-            if (isset($this->queueNext[0])) {
-                return $this->current = $this->queueNext[0];
-            }
-
-            if (isset($this->queue[0])) {
-                return $this->current = $this->queue[0];
-            }
+        if (!empty($this->priority)) {
+            return $this->priority[0];
         }
 
-        return $this->current;
+        if (!empty($this->regular)) {
+            return $this->regular[0];
+        }
+
+        return null;
     }
 
     public function next(): void
     {
-        if ($this->current !== null && isset($this->queueNext[0]) && $this->queueNext[0] === $this->current) {
-            array_shift($this->queueNext);
+        if (!empty($this->priority)) {
+            array_shift($this->priority);
+            return;
         }
 
-        if (!isset($this->queueNext[0])) {
-            array_shift($this->queue);
+        if (!empty($this->regular)) {
+            array_shift($this->regular);
+            return;
         }
-
-        $this->current = null;
     }
 
     public function fail(string $scriptClass): void
     {
-        if (in_array($scriptClass, $this->queue, true)) {
+        if (in_array($scriptClass, $this->failed, true)) {
             return;
         }
 
@@ -79,16 +76,16 @@ final class ScriptQueue
     /**
      * @param class-string $scriptClass
      */
-    public function isInQueue(string $scriptClass): bool
+    public function isInRegular(string $scriptClass): bool
     {
-        return in_array($scriptClass, $this->queue, true);
+        return in_array($scriptClass, $this->regular, true);
     }
 
     /**
      * @param class-string $scriptClass
      */
-    public function isInQueueNext(string $scriptClass): bool
+    public function isInPriority(string $scriptClass): bool
     {
-        return in_array($scriptClass, $this->queueNext, true);
+        return in_array($scriptClass, $this->priority, true);
     }
 }
