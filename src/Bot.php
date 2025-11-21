@@ -15,7 +15,7 @@ final readonly class Bot
 
     public function run(string $heroId): void
     {
-        pcntl_signal(SIGTERM, fn () => $this->runner->onFinally($heroId));
+        pcntl_signal(SIGTERM, fn () => throw new Exception\SignalException());
 
         try {
             $this->runner->onBoot($heroId);
@@ -27,13 +27,15 @@ final readonly class Bot
             $this->control->stop($heroId);
 
             return;
-        } catch (Exception\SleepException $e) {
+        } catch (Exception\SleepException) {
             $sleepTime = $this->runner->sleepTime($heroId);
             $this->runner->onSleep($heroId, $sleepTime);
 
             $this->control->start($heroId, $sleepTime);
 
             return;
+        } catch (Exception\SignalException) {
+            $this->runner->onSignal($heroId);
         } finally {
             $this->runner->onFinally($heroId);
         }

@@ -25,4 +25,7 @@ abstract class AbstractRunner
 
     public function onStopped(string $heroId, StopBotException $e): void
     {}
+
+    public function onSignal(string $heroId): void
+    {}
 }
