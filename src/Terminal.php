@@ -33,7 +33,7 @@ final readonly class Terminal
     public function runCommandBackground($heroId): void
     {
         $command = sprintf(
-            'php %s %s > /dev/null 2>&1 &',
+            'sleep 3 && php %s %s > /dev/null 2>&1 &',
             $this->path,
             $heroId,
         );

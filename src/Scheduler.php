@@ -46,7 +46,7 @@ final readonly class Scheduler
                 }
             }
 
-            sleep(5);
+            sleep(3);
         }
     }
 
