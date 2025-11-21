@@ -12,7 +12,7 @@ final readonly class Terminal
     public function stopAllBotProcesses(): void
     {
         $command = sprintf(
-            "pkill -9 -f 'php %s'",
+            "pkill -15 -f 'php %s'",
             $this->path
         );
 
@@ -22,7 +22,7 @@ final readonly class Terminal
     public function stopBotProcess(string $heroId): void
     {
         $command = sprintf(
-            "pkill -9 -f 'php %s %s'",
+            "pkill -15 -f 'php %s %s'",
             $this->path,
             $heroId
         );

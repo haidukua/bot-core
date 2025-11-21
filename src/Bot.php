@@ -15,6 +15,8 @@ final readonly class Bot
 
     public function run(string $heroId): void
     {
+        pcntl_signal(SIGTERM, fn () => $this->runner->onFinally($heroId));
+
         try {
             $this->runner->onBoot($heroId);
             $this->runner->run($heroId);
