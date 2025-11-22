@@ -22,7 +22,7 @@ final readonly class Terminal
     public function stopBotProcess(string $heroId): void
     {
         $command = sprintf(
-            'pkill -15 -f "php %s %s"',
+            'timeout 3s pkill -15 -f "php %s %s"',
             $this->path,
             $heroId
         );
@@ -33,8 +33,8 @@ final readonly class Terminal
     public function startBotProcess($heroId): void
     {
         $command = sprintf(
-            '(pkill -f "php %s %s" && sleep 3) || true && php %s %s > /dev/null 2>&1 &',
-            $this->path, $heroId, $this->path, $heroId,
+            'php %s %s > /dev/null 2>&1 &',
+            $this->path, $heroId,
         );
 
         $this->execute($command);
