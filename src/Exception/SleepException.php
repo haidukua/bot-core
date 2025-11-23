@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace Haidukua\BotCore\Exception;
 
-final class SleepException extends \Exception
-{
-}
+final class SleepException extends \Exception implements ExceptionInterface {}

@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 namespace Haidukua\BotCore\Exception;
 
-final class SignalException extends \Exception {}
+final class SignalException extends \Exception implements ExceptionInterface {}
