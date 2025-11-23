@@ -32,15 +32,13 @@ final readonly class Scheduler
 
             if ($queuedMessageCount !== 0) {
                 foreach ($messages as $heroId => $expiry) {
-                    if (str_ends_with((string) $expiry, '.1')) {
-                        $this->terminal->stopBotProcess($heroId);
+                    $this->terminal->stopBotProcess($heroId);
 
+                    if (str_ends_with((string) $expiry, '.1')) {
                         continue;
                     }
 
                     if ($now - $expiry > 30) {
-                        $this->terminal->stopBotProcess($heroId);
-
                         continue;
                     }
 
