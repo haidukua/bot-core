@@ -27,8 +27,8 @@ final readonly class Bot
             $this->control->stop($heroId);
 
             return;
-        } catch (Exception\SleepException) {
-            $sleepTime = $this->runner->sleepTime($heroId);
+        } catch (Exception\SleepException $e) {
+            $sleepTime = $e->sleepTime ?? $this->runner->sleepTime($heroId);
             $this->runner->onSleep($heroId, $sleepTime);
 
             $this->control->start($heroId, $sleepTime);

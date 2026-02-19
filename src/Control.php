@@ -15,7 +15,7 @@ final readonly class Control
         $this->scheduler->add($heroId, $delay);
         $this->health->normal(
             $heroId,
-            (new \DateTimeImmutable())->modify(sprintf('+ %s seconds', $delay))
+            new \DateTimeImmutable()->modify(sprintf('+ %s seconds', $delay))
         );
     }
 
