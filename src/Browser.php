@@ -156,7 +156,7 @@ final class Browser extends HttpBrowser
         } catch (TransportExceptionInterface $e) {
             if (++$this->retries <= 5) {
                 if ($proxy !== null) {
-                    $this->proxyManager->fail($proxy);
+                    $this->proxyManager->fail($proxy, $e);
                 }
 
                 sleep(3);

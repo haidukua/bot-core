@@ -8,5 +8,5 @@ interface ProxyManagerInterface
 {
     public function get(): ?Proxy;
 
-    public function fail(Proxy $proxy): void;
+    public function fail(Proxy $proxy, \Throwable $e): void;
 }
