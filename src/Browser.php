@@ -76,6 +76,28 @@ final class Browser extends HttpBrowser
         return $crawler;
     }
 
+    public function backgroundJsonRequest(string $method, string $uri, array $parameters = [], array $server = []): Response
+    {
+        $internalRequest = $this->internalRequest;
+        $request = $this->request;
+        $response = $this->response;
+        $internalResponse = $this->internalResponse;
+        $cookieJar = $this->cookieJar;
+        $crawler = $this->crawler;
+
+        $this->jsonRequest($method, $uri, $parameters, $server, false);
+        $r = $this->getInternalResponse();
+
+        $this->internalRequest = $internalRequest;
+        $this->request = $request;
+        $this->response = $response;
+        $this->internalResponse = $internalResponse;
+        $this->cookieJar = $cookieJar;
+        $this->crawler = $crawler;
+
+        return $r;
+    }
+
     public function goTo(string $uri): Crawler
     {
         return $this->request('GET', $uri);
